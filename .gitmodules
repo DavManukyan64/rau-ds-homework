@@ -1,4 +1,3 @@
    [submodule "ds-practice-problems"]
-       path = submodules/ds-practice-problems
+       path = use/ds-practice-problems
        url = git@github.com:Garnik645/ds-practice-problems.git
-       branch = main
