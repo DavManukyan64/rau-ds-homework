@@ -1,0 +1,45 @@
+#include <iostream>
+#include <stack>
+#include <string>
+#include <vector>
+
+int evaluateRPN(const std::vector<std::string>& expr) {
+	std::stack<int> st;
+	for (const std::string& token : expr) {
+		if (token == "+" || token == "-" || token == "*" || token == "/") {
+			int b = st.top();
+			st.pop();
+
+			int a = st.top();
+			st.pop();
+
+			if (token == "+") {
+				st.push(a + b);
+			}
+			else if (token == "-") {
+				st.push(a - b);
+			}
+			else if (token == "*") {
+				st.push(a * b);
+			}
+			else if (token == "/") {
+				st.push(a / b);
+			}
+		}
+		else {
+			st.push(std::stoi(token));
+		}
+	}
+	return st.top();
+}
+
+
+
+
+int main() {
+	std::vector<std::string> expr = { "2", "1", "+", "3", "*" };
+
+	std::cout << evaluateRPN(expr) << '\n';
+
+	return 0;
+}
