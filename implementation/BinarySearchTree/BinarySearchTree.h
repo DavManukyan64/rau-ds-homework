@@ -101,21 +101,17 @@ public:
     
     /// 3. Конструктор копирования
     BinarySearchTree(const BinarySearchTree& other) : _root(nullptr), _size(0) {
-        std::stack<Node*> st;
-        if (other._root != nullptr) {
-            st.push(other._root);
-        }
-        while (!st.empty()) {
-            Node* cur = st.top();
-            st.pop();
-            insert(cur->data);
-            if (cur->right != nullptr) {
-                st.push(cur->right);
+        struct Copier {
+            static void run(Node* node, BinarySearchTree& tree) {
+                if (node == nullptr) {
+                    return;
+                }
+                tree.insert(node->data);
+                run(node->left, tree);
+                run(node->right, tree);
             }
-            if (cur->left != nullptr) {
-                st.push(cur->left);
-            }
-        }
+        };
+        Copier::run(other._root, *this);
     }
     
     /// 4. Оператор присваивания
@@ -124,21 +120,17 @@ public:
             return *this;
         }
         clear();
-        std::stack<Node*> st;
-        if (other._root != nullptr) {
-            st.push(other._root);
-        }
-        while (!st.empty()) {
-            Node* cur = st.top();
-            st.pop();
-            insert(cur->data);
-            if (cur->right != nullptr) {
-                st.push(cur->right);
+        struct Copier {
+            static void run(Node* node, BinarySearchTree& tree) {
+                if (node == nullptr) {
+                    return;
+                }
+                tree.insert(node->data);
+                run(node->left, tree);
+                run(node->right, tree);
             }
-            if (cur->left != nullptr) {
-                st.push(cur->left);
-            }
-        }
+        };
+        Copier::run(other._root, *this);
         return *this;
     }
     
@@ -159,63 +151,49 @@ public:
     
     /// 8. inorder() - обход в порядке (выводит на консоль)
     void inorder() const {
-        std::stack<Node*> st;
-        Node* cur = _root;
-        while (cur != nullptr || !st.empty()) {
-            while (cur != nullptr) {
-                st.push(cur);
-                cur = cur->left;
+        struct Walker {
+            static void run(Node* node) {
+                if (node == nullptr) {
+                    return;
+                }
+                run(node->left);
+                std::cout << node->data << ' ';
+                run(node->right);
             }
-            cur = st.top();
-            st.pop();
-            std::cout << cur->data << ' ';
-            cur = cur->right;
-        }
+        };
+        Walker::run(_root);
         std::cout << '\n';
     }
     
     /// 9. preorder() - префиксный обход
     void preorder() const {
-        std::stack<Node*> st;
-        if (_root != nullptr) {
-            st.push(_root);
-        }
-        while (!st.empty()) {
-            Node* cur = st.top();
-            st.pop();
-            std::cout << cur->data << ' ';
-            if (cur->right != nullptr) {
-                st.push(cur->right);
+        struct Walker {
+            static void run(Node* node) {
+                if (node == nullptr) {
+                    return;
+                }
+                std::cout << node->data << ' ';
+                run(node->left);
+                run(node->right);
             }
-            if (cur->left != nullptr) {
-                st.push(cur->left);
-            }
-        }
+        };
+        Walker::run(_root);
         std::cout << '\n';
     }
     
     /// 10. postorder() - постфиксный обход
     void postorder() const {
-        std::stack<Node*> st1;
-        std::stack<Node*> st2;
-        if (_root != nullptr) {
-            st1.push(_root);
-        }
-        while (!st1.empty()) {
-            Node* cur = st1.top();
-            st1.pop();
-            st2.push(cur);
-            if (cur->left != nullptr) {
-                st1.push(cur->left);
+        struct Walker {
+            static void run(Node* node) {
+                if (node == nullptr) {
+                    return;
+                }
+                run(node->left);
+                run(node->right);
+                std::cout << node->data << ' ';
             }
-            if (cur->right != nullptr) {
-                st1.push(cur->right);
-            }
-        }
-        while (!st2.empty()) {
-            std::cout << st2.top()->data << ' ';
-            st2.pop();
-        }
+        };
+        Walker::run(_root);
         std::cout << '\n';
     }
     
